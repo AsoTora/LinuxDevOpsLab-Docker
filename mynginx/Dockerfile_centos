@@ -1,0 +1,12 @@
+FROM centos:7
+LABEL AUTHOR=ashvedau
+
+# install nginx
+RUN yum install -y yum-utils
+RUN yum install -y epel-release
+RUN yum install -y nginx
+COPY index.html /usr/share/nginx/html
+
+# run nginx
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
