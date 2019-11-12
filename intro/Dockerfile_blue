@@ -1,0 +1,4 @@
+FROM nginx
+EXPOSE 80
+COPY index_blue.html /usr/share/nginx/html/index.html
+CMD nginx -g 'daemon off;'
