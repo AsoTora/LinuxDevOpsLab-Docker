@@ -1,7 +1,5 @@
 FROM ubuntu
 LABEL AUTHOR=ashvedau
-
-# install nginx
 RUN apt -y update
 RUN apt -y install curl gnupg2 ca-certificates lsb-release
 RUN echo "deb http://nginx.org/packages/ubuntu lsb_release -cs nginx" \
@@ -9,9 +7,8 @@ RUN echo "deb http://nginx.org/packages/ubuntu lsb_release -cs nginx" \
 RUN echo "deb http://nginx.org/packages/mainline/ubuntu lsb_release -cs nginx" \
     | tee /etc/apt/sources.list.d/nginx.list
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add -
-
-COPY index_ubuntu.html /var/www/html
-
-# run nginx
+RUN apt -y install nginx
+COPY ./index.html /var/www/html/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
