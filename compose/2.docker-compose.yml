@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+    nginx:
+        env_file: /task/3/nginx_env
+        ports:
+            - 10083:80
+            - 50000:50000
+        volumes:
+            - /task/3/index.html:/usr/share/nginx/html/index.html
+        logging:
+            driver: journald
+        container_name: nginx_web
+        image: nginx:1.16

@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+    nginx:
+        ports:
+            - '10084:80'
+        container_name: nginx
+        volumes:
+          - ./web.conf:/etc/nginx/conf.d/default.conf
+        image: nginx:alpine
+    tomcat:
+        network_mode: service:nginx
+        container_name: tomcat
+        image: tomcat:jdk8-openjdk-slim

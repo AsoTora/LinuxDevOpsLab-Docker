@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    httpd:
+        environment:
+            - COURSE=compose
+            - MAINTAINER=ashvedau
+        restart: on-failure
+        ports:
+            - '10082:80'
+        container_name: httpd_web
+        image: httpd
