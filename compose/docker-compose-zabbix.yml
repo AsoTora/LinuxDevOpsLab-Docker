@@ -1,0 +1,82 @@
+version: "2.2"
+
+services:
+ zabbix-web-nginx-mysql: 
+   tty: true
+   container_name: zabbix-web-nginx-mysql
+   environment:
+     - DB_SERVER_HOST=mysql-server
+     - MYSQL_DATABASE=zabbix
+     - MYSQL_USER=zabbix
+     - MYSQL_PASSWORD=zabbix_pwd
+     - MYSQL_ROOT_PASSWORD=root_pwd
+   ports:
+    - '80:80'
+   restart: unless-stopped
+   image: zabbix/zabbix-web-nginx-mysql:alpine-4.4.1
+   cpus: 0.10
+   ulimits:
+     nproc: 65535
+     nofile:
+       soft: "20000"
+       hard: "40000"
+   sysctls:
+     net.core.somaxconn: 65535
+   healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:80"]
+     interval: 30s
+     timeout: 10s
+     retries: 10
+     start_period: 60s
+   links:
+      - 'mysql-server:mysql'
+      - 'zabbix-server-mysql:zabbix-server'
+ 
+ 
+ zabbix-server-mysql:
+   tty: true
+   container_name: zabbix-server-mysql
+   hostname: zabbix-server
+   environment:
+     - DB_SERVER_HOST=mysql-server
+     - MYSQL_DATABASE=zabbix
+     - MYSQL_USER=zabbix
+     - MYSQL_PASSWORD=zabbix_pwd
+     - MYSQL_ROOT_PASSWORD=root_pwd
+     - ZBX_JAVAGATEWAY=zabbix-java-gateway
+   ports: 
+     - '10051:10051'
+   restart: unless-stopped
+   image: zabbix/zabbix-server-mysql:centos-4.4.1
+   cpus: 0.20
+   sysctls:
+     net.ipv4.ip_local_port_range: 1024 65000
+     net.ipv4.conf.all.accept_redirects: 0
+     net.ipv4.conf.all.secure_redirects: 0
+     net.ipv4.conf.all.send_redirects: 0
+
+
+ mysql-server:  
+   tty: true
+   container_name: mysql-server
+   restart: unless-stopped
+   environment:
+     - MYSQL_DATABASE=zabbix
+     - MYSQL_USER=zabbix
+     - MYSQL_PASSWORD=zabbix_pwd
+     - MYSQL_ROOT_PASSWORD=root_pwd
+   image: mysql:5.7
+   command: mysqld --character-set-server=utf8 --collation-server=utf8_bin
+   cpus: 0.30
+   volumes:
+     - /data/mysql/:/var/lib/mysql/
+
+
+
+
+ zabbix-java-gateway:
+   tty: true
+   container_name: zabbix-java-gateway
+   restart: unless-stopped
+   image: zabbix/zabbix-java-gateway:centos-4.4.1
+   cpus: 0.20
