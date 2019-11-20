@@ -1,0 +1,9 @@
+{
+  "hosts": [
+    "tcp://0.0.0.0:2375",
+    "unix://var/run/dokcer.sock"
+ ],
+  "live-restore": true,
+  "metrics-addr": "127.0.0.1:9323",
+  "expiremental": true
+}
